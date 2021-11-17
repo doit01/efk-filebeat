@@ -1,0 +1,146 @@
+version: '3.2'
+
+services:
+  # es02:
+  #   image: centos7docker:443/aliang-xyl/elasticsearch:7.6.2
+  #   container_name: es02
+  #   environment:
+  #     - node.name=es02
+  #     - cluster.name=es-docker-cluster
+  #     - discovery.seed_hosts=es01,es03
+  #     - cluster.initial_master_nodes=es01
+  #     - bootstrap.memory_lock=true
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #     - TZ=Asia/Shanghai
+  #     - node.master=true
+  #     - node.data=true
+  #     - http.cors.enabled=true
+  #     - http.cors.allow-origin=*
+  #     - http.cors.allow-headers=Authorization,X-Requested-With,Content-Length,Content-Type
+  #     - xpack.security.enabled=true
+  #     - xpack.security.transport.ssl.enabled=true
+  #     - xpack.security.audit.enabled=true
+  #     - xpack.license.self_generated.type=basic
+  #     - xpack.monitoring.collection.enabled=true
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   volumes:
+  #     - ./es02/data:/usr/share/elasticsearch/data
+  #     - ./es02/logs:/usr/share/elasticsearch/logs
+  #     - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+  #   ports:
+  #     - 9202:9200
+  #   networks:
+  #     - elastic
+
+  # es03:
+  #   image: centos7docker:443/aliang-xyl/elasticsearch:7.6.2
+  #   container_name: es03
+  #   environment:
+  #     - node.name=es03
+  #     - cluster.name=es-docker-cluster
+  #     - discovery.seed_hosts=es01,es02
+  #     - cluster.initial_master_nodes=es01
+  #     - bootstrap.memory_lock=true
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #     - TZ=Asia/Shanghai
+  #     - node.master=true
+  #     - node.data=true
+  #     - http.cors.enabled=true
+  #     - http.cors.allow-origin=*
+  #     - http.cors.allow-headers=Authorization,X-Requested-With,Content-Length,Content-Type
+  #     - xpack.security.enabled=true
+  #     - xpack.security.transport.ssl.enabled=true
+  #     - xpack.security.audit.enabled=true
+  #     - xpack.license.self_generated.type=basic
+  #     - xpack.monitoring.collection.enabled=true
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   volumes:
+  #     - ./es03/data:/usr/share/elasticsearch/data
+  #     - ./es03/logs:/usr/share/elasticsearch/logs
+  #     - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+  #   ports:
+  #     - 9203:9200
+  #   networks:
+  #     - elastic
+
+  elasticsearch:
+    build:
+      context: es/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xms1024m -Xmx1024m"
+      ELASTIC_PASSWORD: changeme
+      # Use single node discovery in order to disable production mode and avoid bootstrap checks
+      # see https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+      discovery.type: single-node
+      TAKE_FILE_OWNERSHIP: "true"
+      node.name: es01
+      cluster.initial_master_nodes: es01
+      - TZ: Asia/Shanghai
+      - node.master: true
+      - node.data: true
+      - http.cors.enabled: true
+      - http.cors.allow-origin: *
+      - http.cors.allow-headers: Authorization,X-Requested-With,Content-Length,Content-Type
+
+    volumes:
+            - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+            - ${MASTER_DATA_DIR}:/usr/share/elasticsearch/data:rw
+            - ${MASTER_LOGS_DIR}:/usr/share/elasticsearch/logs:rw  
+    networks:
+      - elk
+  elasticsearch-head:
+      image: 10.128.29.160:5000/mobz/elasticsearch-head:5
+      container_name: elasticsearch-head
+      environment:
+        TZ: 'Asia/Shanghai'
+      ports:
+        - '9201:9100'
+      networks:
+          - elk
+  kibana:
+    build:
+      context: kibana/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    ports:
+      - "5601:5601"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+    environment:
+      - elasticsearch.url=http://elasticsearch:9200
+      - elasticsearch.hosts=http://elasticsearch:9200
+      - i18n.locale=zh-CN   
+      - TZ=Asia/Shanghai
+    volumes:
+      # - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+      - /etc/localtime:/etc/localtime  
+
+  # filebeat:
+  #   build:
+  #     context: filebeat/
+  #   networks:
+  #     - elk
+  #   volumes:
+  #       - ${GLOBAL_APP_PATH}filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+  #       - ${GLOBAL_APP_PATH}log:/var/lib/docker/containers:ro
+  #   # privileged: true
+#  deployed to each machine
+networks:
+  elk:
+    driver: bridge
+
+volumes:
+  elasticsearch:

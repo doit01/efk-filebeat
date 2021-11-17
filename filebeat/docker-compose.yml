@@ -1,0 +1,28 @@
+version: '3.2'
+services:
+  filebeat:
+    user: root
+    image: "10.128.29.160:5000/docker.elastic.co/beats/filebeat:7.11.1"
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+        reservations:
+          memory: 200M
+    # networks:
+    #   - elk
+    volumes:
+        - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+        # - config:/usr/share/filebeat/:ro
+        # - ${GLOBAL_APP_PATH}log:/var/lib/docker/containers:ro
+        - /root:/var/lib/docker/containers:ro
+    # privileged: true
+
+# networks:
+#   elk:
+#     driver: bridge
+
+# volumes:
+#   elasticsearch:
+volumes:
+    config: {}

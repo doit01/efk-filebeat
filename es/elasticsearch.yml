@@ -1,0 +1,47 @@
+
+## Default Elasticsearch configuration from Elasticsearch base image.
+## https://github.com/elastic/elasticsearch/blob/master/distribution/docker/src/docker/config/elasticsearch.yml
+#network.host: 0.0.0.0
+#master节点es01
+# cluster.initial_master_nodes: ["es01"]
+# discovery.seed_hosts: ["es01","es02","es03"]
+# cluster.name: "es-docker-cluster"
+# cluster.initial_master_nodes: ["node-main"]
+# path.data: /home/es/path/data
+# path.logs: /home/es/path/logs
+#  chmod -R 777 /home
+discovery.zen.minimum_master_nodes: 1
+discovery.zen.ping_timeout: 3000s
+discovery.zen.ping.unicast.hosts: ["10.128.29.195"]
+bootstrap.memory_lock: false
+bootstrap.system_call_filter: false
+
+
+
+
+#  - http.cors.enabled=true
+#  - http.cors.allow-origin=*
+#  - http.cors.allow-headers=Authorization,X-Requested-With,Content-Length,Content-Type
+#  -
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+http.cors.allow-methods: OPTIONS, HEAD, GET, POST, PUT, DELETE
+http.cors.allow-headers: "Authorization,X-Requested-With, Content-Type, Content-Length, X-User"
+#开启安全认证相关配置
+# elasticsearch.username: "elastic"
+# elasticsearch.password: "123456"
+# http.basic.user: "admin"
+# http.basic.password: "pwd"
+# http.basic.ipwhitelist: ["localhost", "127.0.0.1"]
+
+#开启kibana监控配置,如果不开启，也可以在kibana监控界面开启
+#xpack.monitoring.collection.enabled: true
+#xpack.security.enabled: true
+#xpack.security.transport.ssl.enabled: true
+#xpack.security.audit.enabled: true
+#xpack.license.self_generated.type: basic
+#xpack.security.transport.ssl.keystore.type: PKCS12
+#xpack.security.transport.ssl.verification_mode: certificate
+#xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
+#xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
+#xpack.security.transport.ssl.truststore.type: PKCS12

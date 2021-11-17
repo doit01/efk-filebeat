@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="elasticsearch-analysis-ik-7.11.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/elasticsearch/elasticsearch-analysis-ik-7.11.1/commons-logging-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/elasticsearch/elasticsearch-analysis-ik-7.11.1/commons-codec-1.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/elasticsearch/elasticsearch-analysis-ik-7.11.1/httpclient-4.5.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/elasticsearch/elasticsearch-analysis-ik-7.11.1/elasticsearch-analysis-ik-7.11.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/elasticsearch/elasticsearch-analysis-ik-7.11.1/httpcore-4.4.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
