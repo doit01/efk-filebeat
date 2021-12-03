@@ -1,3 +1,6 @@
+
+https://www.elastic.co/guide/en/beats/filebeat/current/ilm.html
+
 output.elasticsearch:
   hosts: ["http://localhost:9200"]
   indices:
