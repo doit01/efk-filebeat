@@ -1,3 +1,16 @@
+output.elasticsearch:
+  hosts: ["http://localhost:9200"]
+  indices:
+    - index: "warning-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        message: "WARN"
+    - index: "error-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        message: "ERR"
+        
+        
+        
+
 /var/lib/docker/volumes
 docker-compose up --build --force-recreate
 查看docker container 的挂载
